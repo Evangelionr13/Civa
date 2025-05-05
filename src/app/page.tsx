@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import Confetti from "react-confetti";
@@ -28,10 +28,8 @@ export default function Home() {
   });
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [hearts, setHearts] = useState<{ id: number; x: number; y: number }[]>(
-    []
-  );
-  let heartId = 0;
+  const [hearts, setHearts] = useState<{ id: number; x: number; y: number }[]>([]);
+  const heartIdRef = useRef(0);
 
   useEffect(() => {
     const calculateTimeLeft = (): TimeLeft => {
@@ -63,7 +61,7 @@ export default function Home() {
     const handleClick = (e: MouseEvent) => {
       const x = e.clientX;
       const y = e.clientY;
-      const newHeart = { id: heartId++, x, y };
+      const newHeart = { id: heartIdRef.current++, x, y };
 
       setHearts((prev) => [...prev, newHeart]);
 
@@ -77,8 +75,7 @@ export default function Home() {
   }, []);
 
   return (
-<div className="min-h-screen bg-animated flex flex-col items-center justify-center">
-
+    <div className="min-h-screen bg-animated flex flex-col items-center justify-center">
       <Head>
         <title>Surprise for My Love! 🥰💖</title>
       </Head>
@@ -107,48 +104,45 @@ export default function Home() {
           <p className="mb-4">
             Happy Birthday, my love. Thank you for being the most amazing part
             of my life. Every day with you is full of laughter, warmth, and
-            love — and I wouldn't trade that for anything in the world. You make
-            me a better person just by being you, and I'm so grateful to have
+            love — and I wouldn&apos;t trade that for anything in the world. You make
+            me a better person just by being you, and I&apos;m so grateful to have
             you by my side.
             <br />
-            <br />A
-            on your special day, I hope you feel as loved as you truly are. May
+            <br />
+            On your special day, I hope you feel as loved as you truly are. May
             this year bring you endless happiness, success in everything you do,
-            and moments that take your breath away. I'll be right here, loving
+            and moments that take your breath away. I&apos;ll be right here, loving
             you more every single day.
             <br />
             <br />
-            Happy Birthday again, my heart. You mean everything to me.  <br /> I'm still
+            Happy Birthday again, my heart. You mean everything to me. <br /> I&apos;m still
             waiting for your kiss. 🥰🎁
             <br />
             <span className="text-2xl">💗 💞</span>
           </p>
 
-      
-          <Image 
-  src="/images/cute.JPG" 
-  width={200} 
-  height={200} 
-  alt="Our Memory"
-  className="rounded-xl shadow-lg border-4 border-pink-300 mx-auto mb-4"
-/>
-{/* ใส่ไว้ใน JSX เมื่อ isSurprise === true */}
-{isSurprise && (
-  <div className="relative">
-    {[...Array(2)].map((_, i) => (
-      <div
-        key={i}
-        className="absolute heart"
-        style={{
-          left: `${Math.random() * 100}%`,
-          top: `${Math.random() * 180}%`,
-          animationDelay: `${i * 0.5}s`,
-        }}
-      ></div>
-    ))}
-  </div>
-)}
+          <Image
+            src="/images/cute.JPG"
+            width={200}
+            height={200}
+            alt="Our Memory"
+            className="rounded-xl shadow-lg border-4 border-pink-300 mx-auto mb-4"
+          />
 
+          {/* ใส่หัวใจลอยเบื้องหลัง */}
+          <div className="relative">
+            {[...Array(2)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute heart"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 180}%`,
+                  animationDelay: `${i * 0.5}s`,
+                }}
+              ></div>
+            ))}
+          </div>
 
           <audio
             controls
@@ -159,22 +153,21 @@ export default function Home() {
           />
           {isPlaying && (
             <p className="text-green-500 mt-2">🎶 Now Playing...</p>
-          )}  
+          )}
         </div>
       )}
 
-{!isSurprise && (
-  <div className="mt-8 text-center">
-    <h2 className="text-2xl mb-4">🎂 Countdown To a Special Birthday!</h2>
-    <div className="flex gap-4 justify-center">
-      <TimeBox value={timeLeft.days} label="day" />
-      <TimeBox value={timeLeft.hours} label="hour" />
-      <TimeBox value={timeLeft.minutes} label="minute" />
-      <TimeBox value={timeLeft.seconds} label="second" />
-    </div>
-  </div>
-)}
-
+      {!isSurprise && (
+        <div className="mt-8 text-center">
+          <h2 className="text-2xl mb-4">🎂 Countdown To a Special Birthday!</h2>
+          <div className="flex gap-4 justify-center">
+            <TimeBox value={timeLeft.days} label="day" />
+            <TimeBox value={timeLeft.hours} label="hour" />
+            <TimeBox value={timeLeft.minutes} label="minute" />
+            <TimeBox value={timeLeft.seconds} label="second" />
+          </div>
+        </div>
+      )}
 
       {/* Floating hearts when click */}
       {hearts.map((heart) => (
