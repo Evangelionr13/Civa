@@ -1,103 +1,201 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Head from "next/head";
 import Image from "next/image";
+import Confetti from "react-confetti";
+import "./post.css";
+
+interface TimeLeft {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
+interface TimeBoxProps {
+  value: number;
+  label: string;
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [isSurprise, setIsSurprise] = useState<boolean>(false);
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [hearts, setHearts] = useState<{ id: number; x: number; y: number }[]>(
+    []
+  );
+  let heartId = 0;
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    const calculateTimeLeft = (): TimeLeft => {
+      const birthday = new Date("2025-05-05T00:00:00");
+      const now = new Date();
+      const difference = birthday.getTime() - now.getTime();
+
+      if (difference <= 0) {
+        setIsButtonDisabled(false);
+        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      }
+
+      return {
+        days: Math.max(0, Math.floor(difference / (1000 * 60 * 60 * 24))),
+        hours: Math.max(0, Math.floor((difference / (1000 * 60 * 60)) % 24)),
+        minutes: Math.max(0, Math.floor((difference / (1000 * 60)) % 60)),
+        seconds: Math.max(0, Math.floor((difference / 1000) % 60)),
+      };
+    };
+
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const x = e.clientX;
+      const y = e.clientY;
+      const newHeart = { id: heartId++, x, y };
+
+      setHearts((prev) => [...prev, newHeart]);
+
+      setTimeout(() => {
+        setHearts((prev) => prev.filter((heart) => heart.id !== newHeart.id));
+      }, 2000);
+    };
+
+    window.addEventListener("click", handleClick);
+    return () => window.removeEventListener("click", handleClick);
+  }, []);
+
+  return (
+<div className="min-h-screen bg-animated flex flex-col items-center justify-center">
+
+      <Head>
+        <title>Surprise for My Love! 🥰💖</title>
+      </Head>
+
+      {isSurprise && <Confetti recycle={false} numberOfPieces={500} />}
+
+      <h1 className="text-4xl md:text-6xl font-bold text-rose-600 mb-8 animate-bounce">
+        Happy Birthday My Love! 🎉
+      </h1>
+
+      <button
+        onClick={() => setIsSurprise(true)}
+        disabled={isButtonDisabled}
+        className={`px-8 py-3 rounded-full mb-8 text-lg font-bold transition-all duration-300 ${
+          isButtonDisabled
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-xl hover:scale-105"
+        }`}
+      >
+        💝 click here for you babyy 🎁
+      </button>
+
+      {isSurprise && (
+        <div className="animate-fadeIn max-w-2xl bg-white p-8 rounded-lg shadow-lg text-center relative">
+          <p className="text-xl mb-4">💌 Dear Civa</p>
+          <p className="mb-4">
+            Happy Birthday, my love. Thank you for being the most amazing part
+            of my life. Every day with you is full of laughter, warmth, and
+            love — and I wouldn't trade that for anything in the world. You make
+            me a better person just by being you, and I'm so grateful to have
+            you by my side.
+            <br />
+            <br />A
+            on your special day, I hope you feel as loved as you truly are. May
+            this year bring you endless happiness, success in everything you do,
+            and moments that take your breath away. I'll be right here, loving
+            you more every single day.
+            <br />
+            <br />
+            Happy Birthday again, my heart. You mean everything to me.  <br /> I'm still
+            waiting for your kiss. 🥰🎁
+            <br />
+            <span className="text-2xl">💗 💞</span>
+          </p>
+
+      
+          <Image 
+  src="/images/cute.JPG" 
+  width={200} 
+  height={200} 
+  alt="Our Memory"
+  className="rounded-xl shadow-lg border-4 border-pink-300 mx-auto mb-4"
+/>
+{/* ใส่ไว้ใน JSX เมื่อ isSurprise === true */}
+{isSurprise && (
+  <div className="relative">
+    {[...Array(2)].map((_, i) => (
+      <div
+        key={i}
+        className="absolute heart"
+        style={{
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 180}%`,
+          animationDelay: `${i * 0.5}s`,
+        }}
+      ></div>
+    ))}
+  </div>
+)}
+
+
+          <audio
+            controls
+            autoPlay={isSurprise}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            src="/happy (1).mp3"
+          />
+          {isPlaying && (
+            <p className="text-green-500 mt-2">🎶 Now Playing...</p>
+          )}  
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      )}
+
+{!isSurprise && (
+  <div className="mt-8 text-center">
+    <h2 className="text-2xl mb-4">🎂 Countdown To a Special Birthday!</h2>
+    <div className="flex gap-4 justify-center">
+      <TimeBox value={timeLeft.days} label="day" />
+      <TimeBox value={timeLeft.hours} label="hour" />
+      <TimeBox value={timeLeft.minutes} label="minute" />
+      <TimeBox value={timeLeft.seconds} label="second" />
+    </div>
+  </div>
+)}
+
+
+      {/* Floating hearts when click */}
+      {hearts.map((heart) => (
+        <div
+          key={heart.id}
+          className="fixed text-pink-500 text-3xl animate-floatHeart pointer-events-none"
+          style={{
+            left: heart.x,
+            top: heart.y,
+          }}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          💖
+        </div>
+      ))}
     </div>
   );
 }
+
+const TimeBox: React.FC<TimeBoxProps> = ({ value, label }) => (
+  <div className="bg-white p-4 rounded-lg shadow-md w-20">
+    <div className="text-2xl font-bold text-rose-600">{value}</div>
+    <div className="text-gray-600">{label}</div>
+  </div>
+);

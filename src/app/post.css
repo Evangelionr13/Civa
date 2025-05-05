@@ -1,0 +1,163 @@
+
+@import "tailwindcss";
+
+
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground:linear-gradient(to bottom, #ffe4ec, #ffeef9);
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Kanit,Arial, Helvetica, sans-serif;
+}
+Image {
+  width: 200px;
+  height: 200px;
+}
+/* styles.css */
+.image-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px; /* ระยะห่างระหว่างภาพ */
+  margin-bottom: 10px; /* ระยะห่างด้านล่าง */
+}
+
+.Image {
+  width: 200px; /* ทำให้ภาพมีความกว้างเต็มที่ */
+  height: 200px; /* ปรับความสูงตามอัตราส่วน */
+  border-radius: 0.5rem; /* ทำให้มุมของภาพมีความโค้งมน */
+}
+/* post.css */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 1s ease-out forwards;
+}
+/* เพิ่มใน post.css */
+.heart {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: rgb(255, 128, 149);
+  transform: rotate(-45deg);
+  animation: floatUp 4s infinite ease-in-out;
+}
+
+.heart::before,
+.heart::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background: rgb(255, 128, 149);
+  border-radius: 50%;
+  position: absolute;
+}
+
+.heart::before {
+  top: -10px;
+  left: 0;
+}
+
+.heart::after {
+  left: 10px;
+  top: 0;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-150px) scale(1.2);
+    opacity: 0;
+  }
+}
+/* เพิ่มใน post.css */
+.heart {
+  width: 20px;
+  height: 20px;
+  background: rgb(255, 128, 149);
+  position: absolute;
+  animation: floatUp 6s infinite ease-in;
+  transform: rotate(-45deg);
+  opacity: 0.7;
+}
+.heart::before,
+.heart::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background: rgb(255, 128, 149);
+  border-radius: 50%;
+  position: absolute;
+}
+.heart::before {
+  top: -10px;
+  left: 0;
+}
+.heart::after {
+  top: 0;
+  left: 10px;
+}
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-200px) scale(1.4);
+    opacity: 0;
+  }
+}
+/* post.css */
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.bg-animated {
+  background: linear-gradient(270deg, #ffe6e6, #ffd6eb, #ffe6f0);
+  background-size: 600% 600%;
+  animation: bgMove 15s ease infinite;
+}
+@keyframes floatHeart {
+  0% {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -150px) scale(1.8);
+    opacity: 0;
+  }
+}
+
+.animate-floatHeart {
+  animation: floatHeart 2s ease-out forwards;
+  position: fixed;
+  z-index: 50;
+}
+/* post.css */
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.bg-animated {
+  background: linear-gradient(270deg, #ffe6e6, #ffd6eb, #ffe6f0);
+  background-size: 600% 600%;
+  animation: bgMove 15s ease infinite;
+}
